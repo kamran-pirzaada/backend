@@ -34,40 +34,52 @@
 
 
 
-
-
-
-
-
-// api/index.js
 import express from "express";
 import dotenv from "dotenv";
-import connectDb from "../config/db.js";
+import mongoose from "mongoose";
 import authRoutes from "../routes/auth.routes.js";
 import dashboardRoutes from "../routes/dashboard.routes.js";
 import cors from "cors";
 
 dotenv.config();
 
+let isConnected = false;
+
+async function connectDb() {
+  if (isConnected) return;
+
+  await mongoose.connect(process.env.MONGO_URI);
+  isConnected = true;
+}
+
 const app = express();
 
 // Middleware
 app.use(express.json());
-app.use(cors({
-  origin: "*", // frontend alag domain pe ho to *
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin: "*",
+    credentials: true,
+  })
+);
 
-// Connect DB (serverless friendly)
-await connectDb();
+// DB connect inside request lifecycle (Vercel safe)
+app.use(async (req, res, next) => {
+  try {
+    await connectDb();
+    next();
+  } catch (err) {
+    return res.status(500).json({ error: "DB connection failed" });
+  }
+});
 
-// Routes
-app.use("/api/auth", authRoutes);
-app.use("/api/dashboard", dashboardRoutes); // Add dashboard routes
+// Routes (NO extra /api prefix)
+app.use("/auth", authRoutes);
+app.use("/dashboard", dashboardRoutes);
 
-// Test route
-app.get("/api", (req, res) => {
-  res.status(200).json({ message: "Serverless API is running" });
+// Health check
+app.get("/", (req, res) => {
+  res.status(200).json({ message: "API working" });
 });
 
 export default app;
