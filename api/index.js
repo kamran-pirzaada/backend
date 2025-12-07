@@ -40,8 +40,11 @@ import mongoose from "mongoose";
 import authRoutes from "../routes/auth.routes.js";
 import dashboardRoutes from "../routes/dashboard.routes.js";
 import cors from "cors";
+import testRouter from "./routes/test.routes.js";
+
 
 dotenv.config();
+app.use("/api", testRouter);
 
 let isConnected = false;
 
