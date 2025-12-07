@@ -30,6 +30,9 @@ const router = express.Router();
 router.get("/dashboard-data", authMiddleware, async (req, res) => {
   try {
     // Sirf authorized users ke liye data
+    const authResult = await authMiddleware(req, res);
+    if (authResult === false) return; // unauthorized handled inside middleware
+
     res.status(200).json({ data: "This is protected data" });
   } catch (err) {
     console.error("Dashboard route error:", err.message);

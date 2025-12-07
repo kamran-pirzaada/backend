@@ -60,14 +60,14 @@
 import express from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import connectDb from "../config/db.js";
+// import connectDb from "../config/db.js";
 import User from "../models/user.model.js";
 
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET;
 
 // Connect DB immediately (serverless)
-connectDb();
+// connectDb();
 
 // Login route
 router.post("/login", async (req, res) => {
