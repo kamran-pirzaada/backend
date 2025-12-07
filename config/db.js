@@ -41,6 +41,8 @@ const connectDb = async () => {
   }
 
   try {
+    console.log("MongoDB URI:", uri);
+
     await mongoose.connect(uri);
     isConnected = true;
     console.log("MongoDB connected (serverless)");
