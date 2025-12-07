@@ -43,12 +43,14 @@ import cors from "cors";
 
 dotenv.config();
 
+
+
 let isConnected = false;
 
 async function connectDb() {
   if (isConnected) return;
 
-  await mongoose.connect(process.env.MONGO_URI);
+  await mongoose.connect(process.env.MONGODB_URL);
   isConnected = true;
 }
 
